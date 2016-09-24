@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TbShouchangMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd"  keyProperty="F_PRODUCT_ID" useGeneratedKeys="true">
+		    
+		insert into TB_SHOUCHANG(
+			F_PRODUCT_ID,	
+			F_USER_ID
+		) values (
+			#{pd.F_PRODUCT_ID},
+			#{pd.F_USER_ID}
+		)
+		
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+	          SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+	    
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="page">
+		delete from TB_SHOUCHANG
+		where 
+			F_PRODUCT_ID = #{pd.F_PRODUCT_ID} AND F_USER_ID = #{pd.F_USER_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  TB_PRODUCT
+			set 
+				F_PRODUCTNAME = #{F_PRODUCTNAME},
+				F_PRODUCTDESC = #{F_PRODUCTDESC},
+				F_PRICE = #{F_PRICE},
+				F_CLSID = #{F_CLSID},
+				F_ISSPECIAL = #{F_ISSPECIAL}
+			    where 
+				F_PRODUCT_ID = #{F_PRODUCT_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			F_PRODUCTNAME,	
+			F_PRODUCTDESC,	
+			F_PRICE,	
+			F_CLSID,	
+			F_ISSPECIAL,	
+			F_PRODUCT_ID,
+			tbpictures.PATH as PATH
+		from 
+			TB_PRODUCT tbproduct,TB_PICTURES tbpictures  
+		where 
+			tbproduct.F_ProductPic = tbpictures.PICTURES_ID  AND F_PRODUCT_ID = #{F_PRODUCT_ID}
+	</select>
+	
+	<!-- 通过F_CLSID获取数据 -->
+	<select id="findByByUserId" parameterType="page" resultType="pd">
+	
+ 	select 
+      tbproduct.F_PRODUCT_ID,
+			F_PRODUCTNAME,	
+			F_PRODUCTDESC,	
+			F_PRICE,	
+			F_CLSID,	
+			F_ISSPECIAL,	 
+			tbpictures.PATH as PATH,
+      tbpictures.PICTURES_ID 
+		from 
+			  TB_PRODUCT  tbproduct,TB_PICTURES tbpictures,TB_SHOUCHANG ts 
+		where 
+			tbproduct.F_ProductPic = tbpictures.PICTURES_ID and tbproduct.F_PRODUCT_ID=ts.F_PRODUCT_ID AND ts.F_USER_ID=#{pd.F_USER_ID}
+ 
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.F_PRODUCTNAME,	
+				a.F_PRODUCTDESC,	
+				a.F_PRICE,	
+				a.F_CLSID,	
+				a.F_ISSPECIAL,	
+				a.F_PRODUCT_ID
+		from 
+				TB_PRODUCT a
+		where 1=1 
+		 <if test="pd.KEYWORD != null and pd.KEYWORD != ''"><!-- 关键词检索 -->
+			and
+				(
+					 a.F_ProductName LIKE CONCAT(CONCAT('%', #{pd.KEYWORD}),'%')
+					 or 
+					 a.F_ProductDesc LIKE CONCAT(CONCAT('%', #{pd.KEYWORD}),'%') 
+					 or
+					 a.F_Price LIKE CONCAT(CONCAT('%', #{pd.KEYWORD}),'%') 
+				)
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		        a.F_PRODUCT_ID,
+				a.F_ProductName,	
+				a.F_ProductPic,	
+				a.F_ProductDesc,	
+				a.F_Price,	
+				a.F_ClsId,	
+				a.F_ProductTime,
+				a.F_Status,
+				a.F_IsSpecial,
+				a.F_Degree
+		from 
+				TB_PRODUCT a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from TB_PRODUCT
+		where 
+			F_PRODUCT_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>
