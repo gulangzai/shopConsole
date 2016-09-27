@@ -21,28 +21,28 @@ public class TbRoleService {
 	* 新增
 	*/
 	public int save(PageData pd)throws Exception{
-		return (Integer) dao.save("TbUserMapper.save", pd);
+		return (Integer) dao.save("TbRoleMapper.save", pd);
 	}
 	
 	/*
 	* 删除
 	*/
 	public void delete(PageData pd)throws Exception{
-		dao.delete("TbUserMapper.delete", pd);
+		dao.delete("TbRoleMapper.delete", pd);
 	}
 	
 	/*
 	* 修改
 	*/
 	public void edit(PageData pd)throws Exception{
-		dao.update("TbUserMapper.edit", pd);
+		dao.update("TbRoleMapper.edit", pd);
 	}
 	
 	/*
 	*列表
 	*/
 	public List<PageData> list(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("TbUserMapper.datalistPage", page);
+		return (List<PageData>)dao.findForList("TbRoleMapper.datalistPage", page);
 	}
 	
 	/*
@@ -56,7 +56,7 @@ public class TbRoleService {
 	* 通过id获取数据
 	*/
 	public PageData findById(PageData pd)throws Exception{
-		return (PageData)dao.findForObject("TbUserMapper.findById", pd);
+		return (PageData)dao.findForObject("TbRoleMapper.findById", pd);
 	}
 	
 	/*

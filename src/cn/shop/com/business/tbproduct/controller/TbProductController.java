@@ -42,15 +42,15 @@ import net.sf.json.JSONArray;
 import com.fh.util.Jurisdiction; 
 
 /** 
- * 类名称：TProductController
- * 创建人：FH 
- * 创建时间：2016-06-05
+ * 绫诲悕绉帮細TProductController
+ * 鍒涘缓浜猴細FH 
+ * 鍒涘缓鏃堕棿锛�2016-06-05
  */
 @Controller
 @RequestMapping(value="/tbProductController")
 public class TbProductController extends BaseController {
 	
-	String menuUrl = "tbProductController/list.do"; //菜单地址(权限用)
+	String menuUrl = "tbProductController/list.do"; //鑿滃崟鍦板潃(鏉冮檺鐢�)
 	
 	@Resource(name="tbProductService")
 	private TbProductService tbProductService;
@@ -59,16 +59,16 @@ public class TbProductController extends BaseController {
 	private StandardService standardService;
 	
 	/**
-	 * 新增
+	 * 鏂板
 	 */
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
-		logBefore(logger, "新增TProductController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		logBefore(logger, "鏂板TProductController");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //鏍￠獙鏉冮檺
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		//pd.put("TPRODUCTCONTROLLER_ID", this.get32UUID());	//主键
+		//pd.put("TPRODUCTCONTROLLER_ID", this.get32UUID());	//涓婚敭
 		String f_StandardName = pd.getString("F_StandardName");
 		int productId = tbProductService.save(pd);
 		
@@ -93,12 +93,12 @@ public class TbProductController extends BaseController {
 	}
 	
 	/**
-	 * 删除
+	 * 鍒犻櫎
 	 */
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out){
-		logBefore(logger, "删除TProductController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
+		logBefore(logger, "鍒犻櫎TProductController");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //鏍￠獙鏉冮檺
 		PageData pd = new PageData();
 		try{
 			pd = this.getPageData();
@@ -112,12 +112,12 @@ public class TbProductController extends BaseController {
 	}
 	
 	/**
-	 * 修改
+	 * 淇敼
 	 */
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
-		logBefore(logger, "修改TProductController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		logBefore(logger, "淇敼TProductController");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //鏍￠獙鏉冮檺
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -128,22 +128,22 @@ public class TbProductController extends BaseController {
 	}
 	
 	/**
-	 * 列表
+	 * 鍒楄〃
 	 */
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page){
-		logBefore(logger, "列表TProductController");
-		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限
+		logBefore(logger, "鍒楄〃TProductController");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //鏍￠獙鏉冮檺
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		try{
 			pd = this.getPageData();
 			page.setPd(pd);
-			List<PageData>	varList = tbProductService.list(page);	//列出TProductController列表
-			mv.setViewName("information/tbproduct/tbproduct_list");
+			List<PageData>	varList = tbProductService.list(page);	//鍒楀嚭TProductController鍒楄〃
+			mv.setViewName("business/tbproduct/tbproduct_list");
 			mv.addObject("varList", varList);
 			mv.addObject("pd", pd);
-			mv.addObject(Const.SESSION_QX,this.getHC());	//按钮权限
+			mv.addObject(Const.SESSION_QX,this.getHC());	//鎸夐挳鏉冮檺
 		} catch(Exception e){
 			logger.error(e.toString(), e);
 		}
@@ -151,16 +151,16 @@ public class TbProductController extends BaseController {
 	}
 	
 	/**
-	 * 去新增页面
+	 * 鍘绘柊澧為〉闈�
 	 */
 	@RequestMapping(value="/goAdd")
 	public ModelAndView goAdd(){
-		logBefore(logger, "去新增TProductController页面");
+		logBefore(logger, "鍘绘柊澧濼ProductController椤甸潰");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
-			mv.setViewName("information/tbproduct/tbproduct_add");
+			mv.setViewName("business/tbproduct/tbproduct_add");
 			mv.addObject("msg", "save");
 			mv.addObject("pd", pd);
 		} catch (Exception e) {
@@ -170,17 +170,17 @@ public class TbProductController extends BaseController {
 	}	
 	
 	/**
-	 * 去修改页面
+	 * 鍘讳慨鏀归〉闈�
 	 */
 	@RequestMapping(value="/goEdit")
 	public ModelAndView goEdit(){
-		logBefore(logger, "去修改TProductController页面");
+		logBefore(logger, "鍘讳慨鏀筎ProductController椤甸潰");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
-			pd = tbProductService.findById(pd);	//根据ID读取
-			mv.setViewName("information/tbproduct/tbproduct_edit");
+			pd = tbProductService.findById(pd);	//鏍规嵁ID璇诲彇
+			mv.setViewName("business/tbproduct/tbproduct_edit");
 			mv.addObject("msg", "edit");
 			mv.addObject("pd", pd);
 		} catch (Exception e) {
@@ -190,13 +190,13 @@ public class TbProductController extends BaseController {
 	}	
 	
 	/**
-	 * 批量删除
+	 * 鎵归噺鍒犻櫎
 	 */
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() {
-		logBefore(logger, "批量删除TProductController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "dell")){return null;} //校验权限
+		logBefore(logger, "鎵归噺鍒犻櫎TProductController");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "dell")){return null;} //鏍￠獙鏉冮檺
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
 		try {
@@ -221,12 +221,12 @@ public class TbProductController extends BaseController {
 	}
 	
 	/*
-	 * 导出到excel
+	 * 瀵煎嚭鍒癳xcel
 	 * @return
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel(){
-		logBefore(logger, "导出TProductController到excel");
+		logBefore(logger, "瀵煎嚭TProductController鍒癳xcel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
@@ -234,11 +234,11 @@ public class TbProductController extends BaseController {
 		try{
 			Map<String,Object> dataMap = new HashMap<String,Object>();
 			List<String> titles = new ArrayList<String>();
-			titles.add("商品名");	//1
-			titles.add("商品描述");	//2
-			titles.add("商品价格");	//3
-			titles.add("商品类型");	//4
-			titles.add("是否特卖");	//5
+			titles.add("鍟嗗搧鍚�");	//1
+			titles.add("鍟嗗搧鎻忚堪");	//2
+			titles.add("鍟嗗搧浠锋牸");	//3
+			titles.add("鍟嗗搧绫诲瀷");	//4
+			titles.add("鏄惁鐗瑰崠");	//5
 			dataMap.put("titles", titles);
 			List<PageData> varOList = tbProductService.listAll(pd);
 			List<PageData> varList = new ArrayList<PageData>();
@@ -260,13 +260,13 @@ public class TbProductController extends BaseController {
 		return mv;
 	}
 	
-	/* ===============================权限================================== */
+	/* ===============================鏉冮檺================================== */
 	public Map<String, String> getHC(){
-		Subject currentUser = SecurityUtils.getSubject();  //shiro管理的session
+		Subject currentUser = SecurityUtils.getSubject();  //shiro绠＄悊鐨剆ession
 		Session session = currentUser.getSession();
 		return (Map<String, String>)session.getAttribute(Const.SESSION_QX);
 	}
-	/* ===============================权限================================== */
+	/* ===============================鏉冮檺================================== */
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
@@ -279,7 +279,7 @@ public class TbProductController extends BaseController {
 	@ResponseBody
 	public JSONPObject  mobileListByClassId(Page page,Model model,HttpServletRequest req,HttpServletResponse response){
 		response.setHeader("Access-Control-Allow-Origin", "*");
-	    String callbackFunName =req.getParameter("callbackparam");//得到js函数名称  
+	    String callbackFunName =req.getParameter("callbackparam");//寰楀埌js鍑芥暟鍚嶇О  
 	    
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -292,7 +292,7 @@ public class TbProductController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	//列出Pictures列表
+		}	//鍒楀嚭Pictures鍒楄〃
 		 return new JSONPObject(callbackFunName, varList);    
 	} 
 	
@@ -300,7 +300,7 @@ public class TbProductController extends BaseController {
 	@ResponseBody
 	public JSONPObject  mobileProductById(Page page,Model model,HttpServletRequest req,HttpServletResponse response){
 		response.setHeader("Access-Control-Allow-Origin", "*");
-	    String callbackFunName =req.getParameter("callbackparam");//得到js函数名称  
+	    String callbackFunName =req.getParameter("callbackparam");//寰楀埌js鍑芥暟鍚嶇О  
 	    
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -313,7 +313,7 @@ public class TbProductController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	//列出Pictures列表
+		}	//鍒楀嚭Pictures鍒楄〃
 		 return new JSONPObject(callbackFunName, tbProduct);    
 	} 
 	
@@ -321,7 +321,7 @@ public class TbProductController extends BaseController {
 	@ResponseBody
 	public JSONPObject  mobileProductHot(Page page,Model model,HttpServletRequest req,HttpServletResponse response){
 		response.setHeader("Access-Control-Allow-Origin", "*");
-	    String callbackFunName =req.getParameter("callbackparam");//得到js函数名称  
+	    String callbackFunName =req.getParameter("callbackparam");//寰楀埌js鍑芥暟鍚嶇О  
 	    
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -332,12 +332,12 @@ public class TbProductController extends BaseController {
 		try {  
 			//tbProduct = tbProductService.findById(pd);  
 			varList = tbProductService.findNewHot(page); 
-			//获取热门发布的5个商品
+			//鑾峰彇鐑棬鍙戝竷鐨�5涓晢鍝�
 			//List<TProductDto> tproductHots = tproductMapper.findNewHot(); 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	//列出Pictures列表
+		}	//鍒楀嚭Pictures鍒楄〃
 		 return new JSONPObject(callbackFunName, varList);    
 	} 
 }

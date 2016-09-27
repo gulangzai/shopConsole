@@ -40,7 +40,7 @@
 
 
 
-			<c:forEach items="${menuList}" var="menu">
+			<%-- <c:forEach items="${menuList}" var="menu">
 				<c:if test="${menu.hasMenu}">
 				<li id="lm${menu.MENU_ID }">
 					  <a style="cursor:pointer;" class="dropdown-toggle" >
@@ -65,7 +65,31 @@
 				  		</ul>
 				</li>
 				</c:if>
-			</c:forEach>
+			</c:forEach> --%>
+			
+			<c:forEach items="${menuList}" var="menu"> 
+				<li id="lm${menu.f_menu_id}">
+					  <a style="cursor:pointer;" class="dropdown-toggle" >
+						<i class="${menu.f_menu_icon == null ? 'icon-desktop' : menu.f_menu_icon}"></i>
+						<span>${menu.f_menu_name }</span>
+						<b class="arrow icon-angle-down"></b>
+					  </a>
+					  <ul class="submenu">
+							<c:forEach items="${menu.tbMenus}" var="sub"> 
+								<c:choose>
+									<c:when test="${not empty sub.f_menu_url}">
+									<li id="z${sub.f_menu_id}">
+									<a style="cursor:pointer;" target="mainFrame"  onclick="siMenu('z${sub.f_menu_id}','lm${menu.f_menu_id }','${sub.f_menu_name }','${sub.f_menu_url}')"><i class="icon-double-angle-right"></i>${sub.f_menu_name}</a></li>
+									</c:when>
+									<c:otherwise>
+									<li><a href="javascript:void(0);"><i class="icon-double-angle-right"></i>${sub.f_menu_name }</a></li>
+									</c:otherwise>
+								</c:choose> 
+							</c:forEach>
+				  		</ul>
+				</li> 
+			</c:forEach> 
+			
 
 				</ul><!--/.nav-list-->
 

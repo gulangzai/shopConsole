@@ -36,11 +36,11 @@ public class LoginHandlerInterceptor extends HandlerInterceptorAdapter{
 			User user = (User)session.getAttribute(Const.SESSION_USER);
 			if(user!=null){
 				path = path.substring(1, path.length());
-				boolean b = Jurisdiction.hasJurisdiction(path);
+				/*boolean b = Jurisdiction.hasJurisdiction(path);
 				if(!b){
 					response.sendRedirect(request.getContextPath() + Const.LOGIN);
-				}
-				return b;
+				}*/
+				return true;
 			}else{
 				//登陆过滤
 				response.sendRedirect(request.getContextPath() + Const.LOGIN);

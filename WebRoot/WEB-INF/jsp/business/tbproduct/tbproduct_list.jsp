@@ -72,8 +72,7 @@
 				<tbody> 
 				<!-- 开始循环 -->	
 				<c:choose>
-					<c:when test="${not empty varList}">
-						<c:if test="${QX.cha == 1 }">
+					<c:when test="${not empty varList}"> 
 						<c:forEach items="${varList}" var="var" varStatus="vs">
 							<tr>
 								<td class='center' style="width: 30px;">
@@ -92,8 +91,7 @@
 								</td>  
 							</tr>
 						
-						</c:forEach>
-						</c:if>
+						</c:forEach> 
 						<c:if test="${QX.cha == 0 }">
 							<tr>
 								<td colspan="100" class="center">您无权查看</td>

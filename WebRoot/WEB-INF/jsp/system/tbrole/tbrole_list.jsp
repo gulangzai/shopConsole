@@ -29,7 +29,7 @@ var page_currentPage = '${page.currentPage}';
 <body>
 
  
-<script type="text/javascript" src="${ctxStaticB}/js_system/tbuser/tbuser_list.js"> </script>
+<script type="text/javascript" src="${ctxStaticB}/js_system/tbrole/tbrole_list.js"> </script>
 
 <div class="container-fluid" id="main-container">
 
@@ -40,7 +40,7 @@ var page_currentPage = '${page.currentPage}';
 		<div class="col-sm-12" id="inside">
 	
 			<!-- 检索  -->
-			<form class="form-inline" action="${ctx}/tbUserController/list.do"     method="post" name="Form" id="Form" style="border:solid 1px #ddd;line-height:50px;vertical-align:middle;">
+			<form class="form-inline" action="${ctx}/tbRoleController/list.do"     method="post" name="Form" id="Form" style="border:solid 1px #ddd;line-height:50px;vertical-align:middle;">
 					 
 				     <div class="form-group"  style="border:1px solid #F2F2F2;">
 				      
@@ -70,11 +70,9 @@ var page_currentPage = '${page.currentPage}';
 						<label><input type="checkbox" id="zcheckbox" /><span class="lbl"></span></label>
 						</th>
 						<th class="center">序号</th>
-						<th class="center">用户名</th>	
-						<th class="center">真实姓名</th>
-						<th class="center"    formatter="showSex()">性别</th>
-						<th class="center">邮件</th>
-						<th class="center">电话</th>
+						<th class="center">角色名</th>	
+						<th class="center">描述</th> 
+						<th class="center">是否可用</th> 
 						<th class="center">操作</th>
 					</tr>
 				</thead> 				
@@ -85,24 +83,22 @@ var page_currentPage = '${page.currentPage}';
 						<c:forEach items="${varList}" var="var" varStatus="vs">
 							<tr>
 								<td class='center' style="width: 30px;">
-									<label><input type='checkbox' name='ids' value="${var.F_USER_ID}" /><span class="lbl"></span></label>
+									<label><input type='checkbox' name='ids' value="${var.F_ROLE_ID}" /><span class="lbl"></span></label>
 								</td>
 								<td class='center' style="width: 30px;">${(page.currentPage-1)*page.showCount+vs.index+1}</td>
-										<td  style="text-align:center">${var.F_UserName}</td>
-										<td>${var.F_RealName}</td>
-										<td  style="text-align:center"><c:if test="${var.F_Sex == '0'}">男</c:if><c:if test="${var.F_Sex == '1'}">女</c:if></td>
-										<td  style="text-align:center">${var.F_Email}</td>
-										<td  style="text-align:center">${var.F_Mobile}</td>
-										
+										<td  style="text-align:center">${var.F_ROLE_NAME}</td>
+										<td>${var.DESCRIPTION}</td>
+										<td  style="text-align:center"><c:if test="${var.F_STATUS == '0'}">可用</c:if><c:if test="${var.F_STATUS == '1'}">禁用</c:if></td>
+			 							
 							   <td  class="center" style="width:60px;">   
 							       <div class='hidden-phone visible-desktop btn-group'>
-							          <a class='btn btn-mini btn-info' href="javascript:void(0)"  title="授权" onclick="toRole('${var.F_UserName}');">
+							          <a class='btn btn-mini btn-info' href="javascript:void(0)"  title="授权" onclick="toRole('${var.F_ROLE_ID}');">
 									    <i class="icon-key"></i>  
 								     </a>
-									<a  class='btn btn-mini btn-info'  href="javascript:void(0)" title="编辑" onclick="edit('${var.F_USER_ID}');">
+									<a  class='btn btn-mini btn-info'  href="javascript:void(0)" title="编辑" onclick="edit('${var.F_ROLE_ID}');">
 									   <i class='icon-edit'></i> 
 									</a>
-									<a class='btn btn-mini btn-danger'   title="删除" onclick="del('${var.F_USER_ID}');">
+									<a class='btn btn-mini btn-danger'   title="删除" onclick="del('${var.F_ROLE_ID}');">
 										<i class='icon-trash'></i>
 									</a>
 			                      </div>
@@ -131,12 +127,12 @@ var page_currentPage = '${page.currentPage}';
 				<table style="width:100%;">
 					<tr>
 						<td style="vertical-align:top;">
-							<c:if test="${QX.add == 1 }">
+						 
 							<a class="btn btn-small btn-success" onclick="add();">新增</a>
-							</c:if>
-							<c:if test="${QX.del == 1 }">
+						 
+						 
 							<a class="btn btn-small btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='icon-trash'></i></a>
-							</c:if>
+						 
 						</td>
 						<td style="vertical-align:top;">
 						<div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div>
@@ -176,75 +172,6 @@ function toRole(F_USER_ID){
 		$("#XXXM").empty();
 		$("#XXXM").html("");
 		$("#XXXM").html(data); 
-	});
-}
-
-//批量操作
-function makeAll(msg){
-	bootbox.confirm(msg, function(result) {
-		if(result) {
-			var str = '';
-			var emstr = '';
-			var phones = '';
-			for(var i=0;i < document.getElementsByName('ids').length;i++)
-			{
-				  if(document.getElementsByName('ids')[i].checked){
-				  	if(str=='') str += document.getElementsByName('ids')[i].value;
-				  	else str += ',' + document.getElementsByName('ids')[i].value;
-				  	
-				  	if(emstr=='') emstr += document.getElementsByName('ids')[i].id;
-				  	else emstr += ';' + document.getElementsByName('ids')[i].id;
-				  	
-				  	if(phones=='') phones += document.getElementsByName('ids')[i].alt;
-				  	else phones += ';' + document.getElementsByName('ids')[i].alt;
-				  }
-			}
-			if(str==''){
-				bootbox.dialog("您没有选择任何内容!", 
-					[
-					  {
-						"label" : "关闭",
-						"class" : "btn-small btn-success",
-						"callback": function() {
-							//Example.show("great success");
-							}
-						}
-					 ]
-				);
-				
-				$("#zcheckbox").tips({
-					side:3,
-		            msg:'点这里全选',
-		            bg:'#AE81FF',
-		            time:8
-		        });
-				
-				return;
-			}else{
-				if(msg == '确定要删除选中的数据吗?'){
-					top.jzts();
-					$.ajax({
-						type: "POST",
-						url: '${ctx}/tbUserController/deleteAll.do?tm='+new Date().getTime(),
-				    	data: {USER_IDS:str},
-						dataType:'json',
-						//beforeSend: validateData,
-						cache: false,
-						success: function(data){
-							 $.each(data.list, function(i, list){
-									nextPage(${page.currentPage});
-							 });
-						}
-					});
-				}else if(msg == '确定要给选中的用户发送邮件吗?'){
-					sendEmail(emstr);
-				}else if(msg == '确定要给选中的用户发送短信吗?'){
-					sendSms(phones);
-				}
-				
-				
-			}
-		}
 	});
 }
 

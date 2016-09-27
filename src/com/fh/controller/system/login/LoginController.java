@@ -14,6 +14,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
-import com.fh.entity.system.Menu;
-import com.fh.entity.system.Role;
 import com.fh.entity.system.User;
 import com.fh.service.system.menu.MenuService;
 import com.fh.service.system.role.RoleService;
@@ -31,8 +30,10 @@ import com.fh.util.AppUtil;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
 import com.fh.util.PageData;
-import com.fh.util.RightsHelper;
 import com.fh.util.Tools;
+
+import cn.shop.com.business.tbmenu.service.TbMenuService;
+import cn.shop.com.business.tbmenu.vo.TbMenu;
 /*
  * 总入口
  */
@@ -45,6 +46,8 @@ public class LoginController extends BaseController {
 	private MenuService menuService;
 	@Resource(name="roleService")
 	private RoleService roleService;
+	@Autowired
+	private TbMenuService tbMenuService;
 	
 	/**
 	 * 获取登录用户的IP
@@ -154,7 +157,7 @@ public class LoginController extends BaseController {
 	/**
 	 * 访问系统首页
 	 */
-	@RequestMapping(value="/main/{changeMenu}")
+	/*@RequestMapping(value="/main/{changeMenu}")
 	public ModelAndView login_index(@PathVariable("changeMenu") String changeMenu){
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -260,6 +263,104 @@ public class LoginController extends BaseController {
 				mv.setViewName("system/admin/index");
 				mv.addObject("user", user);
 				mv.addObject("menuList", menuList);
+			}else {
+				mv.setViewName("system/admin/login");//session失效后跳转登录页面
+			}
+			
+			
+		} catch(Exception e){
+			mv.setViewName("system/admin/login");
+			logger.error(e.getMessage(), e);
+		}
+		pd.put("SYSNAME", Tools.readTxtFile(Const.SYSNAME)); //读取系统名称
+		mv.addObject("pd",pd);
+		return mv;
+	}*/
+	
+	
+	@RequestMapping(value="/main/{changeMenu}")
+	public ModelAndView login_index(@PathVariable("changeMenu") String changeMenu){
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		List<TbMenu> allmenuList = new ArrayList<TbMenu>();
+		try{
+			
+			//shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();  
+			Session session = currentUser.getSession();
+			
+			User user = (User)session.getAttribute(Const.SESSION_USER);
+			if (user != null) {
+				
+				User userr = (User)session.getAttribute(Const.SESSION_USERROL);
+				if(null == userr){
+					user = userService.getUserAndRoleById(user.getUSER_ID());
+					session.setAttribute(Const.SESSION_USERROL, user);
+				}else{
+					user = userr;
+				} 
+				//避免每次拦截用户操作时查询数据库，以下将用户所属角色权限、用户权限限都存入session 
+				session.setAttribute(Const.SESSION_USERNAME, user.getUSERNAME());	//放入用户名
+				 
+				 
+				pd.put("F_USER_ID", "0356d78f-9663-4f8e-8da5-6f7eda903590");
+				List<PageData> list = tbMenuService.listAll(pd);
+			    
+				for (int i = 0; i < list.size(); i++) {
+					PageData pd1 = list.get(i);
+					if(pd1.get("F_MENU_PARENT")==null){
+						TbMenu tm = new TbMenu();
+						tm.setF_menu_id(pd1.get("F_MENU_ID").toString());
+						tm.setF_menu_name(pd1.getString("F_MENU_NAME")); 
+						tm.setF_menu_icon(pd1.getString("F_MENU_ICON"));
+						tm.setF_menu_url(pd1.getString("F_MENU_URL"));
+						allmenuList.add(tm);
+					}
+				}
+				
+				
+				for (int i = 0; i < allmenuList.size(); i++) {
+					  TbMenu tm = allmenuList.get(i);
+					  for (int j = 0; j < list.size(); j++) {
+						  PageData pd1 = list.get(j);
+							if(tm.getF_menu_id().equals(String.valueOf(pd1.get("F_MENU_PARENT")))){
+								TbMenu tm1 = new TbMenu();
+								tm1.setF_menu_id(pd1.get("F_MENU_ID").toString());
+								tm1.setF_menu_name(pd1.getString("F_MENU_NAME"));
+								tm1.setF_menu_parent(pd1.get("F_MENU_PARENT").toString());
+								tm1.setF_menu_icon(pd1.getString("F_MENU_ICON"));
+								tm1.setF_menu_url(pd1.getString("F_MENU_URL"));
+								tm.getTbMenus().add(tm1);
+							}
+					  }
+				}
+				
+				if(null == session.getAttribute(Const.SESSION_QX)){
+					session.setAttribute(Const.SESSION_QX, this.getUQX(session));	//按钮权限放到session中
+				}
+				
+				//FusionCharts 报表
+			 	String strXML = "<graph caption='前12个月订单销量柱状图' xAxisName='月份' yAxisName='值' decimalPrecision='0' formatNumberScale='0'><set name='2013-05' value='4' color='AFD8F8'/><set name='2013-04' value='0' color='AFD8F8'/><set name='2013-03' value='0' color='AFD8F8'/><set name='2013-02' value='0' color='AFD8F8'/><set name='2013-01' value='0' color='AFD8F8'/><set name='2012-01' value='0' color='AFD8F8'/><set name='2012-11' value='0' color='AFD8F8'/><set name='2012-10' value='0' color='AFD8F8'/><set name='2012-09' value='0' color='AFD8F8'/><set name='2012-08' value='0' color='AFD8F8'/><set name='2012-07' value='0' color='AFD8F8'/><set name='2012-06' value='0' color='AFD8F8'/></graph>" ;
+			 	mv.addObject("strXML", strXML);
+			 	//FusionCharts 报表
+			 	
+			 	//读取websocket配置
+			 	String strWEBSOCKET = Tools.readTxtFile(Const.WEBSOCKET);//读取WEBSOCKET配置
+			 	if(null != strWEBSOCKET && !"".equals(strWEBSOCKET)){
+					String strIW[] = strWEBSOCKET.split(",fh,");
+					if(strIW.length == 4){
+						pd.put("WIMIP", strIW[0]);
+						pd.put("WIMPORT", strIW[1]);
+						pd.put("OLIP", strIW[2]);
+						pd.put("OLPORT", strIW[3]);
+					}
+				}
+			 	//读取websocket配置
+			 	
+				mv.setViewName("system/admin/index");
+				mv.addObject("user", user);
+				mv.addObject("menuList", allmenuList);
 			}else {
 				mv.setViewName("system/admin/login");//session失效后跳转登录页面
 			}

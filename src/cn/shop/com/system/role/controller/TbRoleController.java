@@ -85,12 +85,11 @@ public class TbRoleController extends BaseController {
 	@RequestMapping(value="/save")
 	public ModelAndView save() throws Exception{
 		logBefore(logger, "新增TUserController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
-		pd = this.getPageData();
-		pd.put("F_USER_ID", this.get32UUID());	//主键
-		pd.put("F_Password", MD5.createMD5("123456"));
+		pd = this.getPageData(); 
+		pd.put("CREATE_TIME", new Date());
 		int UserId = tbRoleService.save(pd); 
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -126,7 +125,7 @@ public class TbRoleController extends BaseController {
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out){
 		logBefore(logger, "删除TUserController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		try{
 			pd = this.getPageData();
@@ -145,7 +144,7 @@ public class TbRoleController extends BaseController {
 	@RequestMapping(value="/edit")
 	public ModelAndView edit() throws Exception{
 		logBefore(logger, "修改TUserController");
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -168,7 +167,7 @@ public class TbRoleController extends BaseController {
 			pd = this.getPageData(); 
 			page.setPd(pd);
 			List<PageData>	varList = tbRoleService.list(page);	//列出TUserController列表
-			mv.setViewName("system/tbuser/tbuser_list");
+			mv.setViewName("system/tbrole/tbrole_list");
 			mv.addObject("varList", varList);
 			mv.addObject("pd", pd);
 			mv.addObject(Const.SESSION_QX,this.getHC());	//按钮权限
@@ -188,7 +187,7 @@ public class TbRoleController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
-			mv.setViewName("system/tbuser/tbuser_add");
+			mv.setViewName("system/tbrole/tbrole_add");
 			mv.addObject("msg", "save");
 			mv.addObject("pd", pd);
 		} catch (Exception e) {
@@ -208,7 +207,7 @@ public class TbRoleController extends BaseController {
 		pd = this.getPageData();
 		try {
 			pd = tbRoleService.findById(pd);	//根据ID读取
-			mv.setViewName("system/tbuser/tbuser_edit");
+			mv.setViewName("system/tbrole/tbrole_edit");
 			mv.addObject("msg", "edit");
 			mv.addObject("pd", pd);
 		} catch (Exception e) {
